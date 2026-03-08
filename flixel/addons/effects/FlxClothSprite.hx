@@ -1,5 +1,6 @@
 package flixel.addons.effects;
 
+import openfl.geom.Rectangle;
 import flixel.FlxCamera;
 import flixel.FlxSprite;
 import flixel.graphics.FlxGraphic;
@@ -15,7 +16,6 @@ import flixel.util.FlxSpriteUtil;
 import openfl.display.BitmapData;
 import openfl.display.Graphics;
 import openfl.geom.Point;
-import openfl.geom.Rectangle;
 
 /**
  * A FlxSprite that draw it's frame in a mesh and behave like a cloth.
@@ -170,12 +170,10 @@ class FlxClothSprite extends FlxSprite
 		calcImage();
 		drawImage();
 
-		getScreenPosition(_point, camera);
-		_point -= offset;
 		if (isPixelPerfectRender(camera))
 			_point.floor();
 
-		_flashPoint.setTo(_point.x + _drawOffset.x, _point.y + _drawOffset.y);
+		_point.addPoint(_drawOffset).copyToFlash(_flashPoint);
 		camera.copyPixels(_frame, meshPixels, meshPixels.rect, _flashPoint, colorTransform, blend, antialiasing);
 	}
 
@@ -196,16 +194,14 @@ class FlxClothSprite extends FlxSprite
 				_matrix.rotateWithTrig(_cosAngle, _sinAngle);
 		}
 
-		getScreenPosition(_point, camera);
-		_point -= offset;
+		getScreenPosition(_point, camera).subtractPoint(offset);
 		if (isPixelPerfectRender(camera))
 			_point.floor();
 
 		if (_frameGraphic == null)
 			_frameGraphic = FlxGraphic.fromBitmapData(framePixels, false, null, false);
 
-		_point += _drawOffset;
-		camera.drawTriangles(_frameGraphic, _vertices, _indices, _uvtData, colors, _point, blend, false, antialiasing);
+		camera.drawTriangles(_frameGraphic, _vertices, _indices, _uvtData, colors, _point.addPoint(_drawOffset), blend, false, antialiasing);
 	}
 
 	#if FLX_DEBUG

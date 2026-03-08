@@ -1,9 +1,9 @@
 package flixel.addons.display;
 
 import flixel.FlxBasic;
-import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxCamera;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxFrame;
 import flixel.math.FlxMatrix;
@@ -204,10 +204,9 @@ class FlxBackdrop extends FlxSprite
 		// The distance between repeated sprites, in screen space
 		final tileSize = FlxPoint.get(frame.frame.width, frame.frame.height);
 		if (drawDirect)
-			tileSize.add(spacing.x, spacing.y);
+			tileSize.addPoint(spacing);
 		
-		getScreenPosition(_point, camera);
-		_point -= offset;
+		getScreenPosition(_point, camera).subtractPoint(offset);
 		var tilesX = 1;
 		var tilesY = 1;
 		if (repeatAxes != NONE)
@@ -234,7 +233,7 @@ class FlxBackdrop extends FlxSprite
 		}
 		
 		if (drawBlit)
-			_point += _blitOffset;
+			_point.addPoint(_blitOffset);
 		
 		if (FlxG.renderBlit)
 			calcFrame(true);
@@ -312,8 +311,7 @@ class FlxBackdrop extends FlxSprite
 			camera.buffer.lock();
 		}
 		
-		getScreenPosition(_point, camera);
-		_point -= offset;
+		getScreenPosition(_point, camera).subtractPoint(offset);
 		var tilesX = 1;
 		var tilesY = 1;
 		if (repeatAxes != NONE)
@@ -340,9 +338,9 @@ class FlxBackdrop extends FlxSprite
 			viewMargins.put();
 			bounds.put();
 		}
-		_point += origin;
+		_point.addPoint(origin);
 		if (drawBlit)
-			_point += _blitOffset;
+			_point.addPoint(_blitOffset);
 		
 		for (tileX in 0...tilesX)
 		{

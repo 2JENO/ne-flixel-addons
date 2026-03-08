@@ -88,7 +88,7 @@ class FlxEffectSprite extends FlxSprite
 	 */
 	override public function getScreenPosition(?point:FlxPoint, ?Camera:FlxCamera):FlxPoint
 	{
-		return super.getScreenPosition(point, Camera).add(_effectOffset.x, _effectOffset.y);
+		return super.getScreenPosition(point, Camera).addPoint(_effectOffset);
 	}
 
 	override public function draw():Void
@@ -124,7 +124,7 @@ class FlxEffectSprite extends FlxSprite
 					pixels = effect.apply(pixels);
 					if (effect.offset != null)
 					{
-						_effectOffset.add(effect.offset.x, effect.offset.y);
+						_effectOffset.addPoint(effect.offset);
 					}
 				}
 			}

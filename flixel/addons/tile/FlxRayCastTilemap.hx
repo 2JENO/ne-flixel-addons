@@ -3,11 +3,10 @@ package flixel.addons.tile;
 import flixel.tile.FlxTilemap;
 import flixel.math.FlxPoint;
 
-#if (flixel < version("5.9.0"))
 /**
  * @author greglieberman
  */
-@:deprecated("FlxRayCastTilemap is deprecated, use FlxTilemap.ray or rayStep, instead")
+@:deprecated("FlxRayCastTilemap is deprecated, use FlxTilemap.ray or rayStep, instead")// for flixel 5.9.0
 class FlxRayCastTilemap extends FlxTilemap
 {
 	/**
@@ -75,8 +74,8 @@ class FlxRayCastTilemap extends FlxTilemap
 		}
 
 		// Find the tile at the start position of the ray
-		cx = getColumnAt(Start.x);
-		cy = getRowAt(Start.y);
+		cx = coordsToTileX(Start.x);
+		cy = coordsToTileY(Start.y);
 
 		if (!inTileRange(cx, cy))
 		{
@@ -87,7 +86,7 @@ class FlxRayCastTilemap extends FlxTilemap
 			return false;
 		}
 
-		if (getTileIndex(Std.int(cx), Std.int(cy)) > 0)
+		if (getTile(Std.int(cx), Std.int(cy)) > 0)
 		{
 			// start point is inside a block
 			Result.x = Start.x;
@@ -156,7 +155,7 @@ class FlxRayCastTilemap extends FlxTilemap
 			if (tMaxX < tMaxY)
 			{
 				cx = cx + stepX;
-				if (getTileIndex(Std.int(cx), Std.int(cy)) > 0)
+				if (getTile(Std.int(cx), Std.int(cy)) > 0)
 				{
 					hitTile = true;
 					break;
@@ -174,7 +173,7 @@ class FlxRayCastTilemap extends FlxTilemap
 			{
 				cy = cy + stepY;
 
-				if (getTileIndex(Std.int(cx), Std.int(cy)) > 0)
+				if (getTile(Std.int(cx), Std.int(cy)) > 0)
 				{
 					hitTile = true;
 					break;
@@ -211,42 +210,36 @@ class FlxRayCastTilemap extends FlxTilemap
 		return (TileX >= 0 && TileX < widthInTiles && TileY >= 0 && TileY < heightInTiles);
 	}
 
-	@:deprecated("tileAt is deprecated, use getTileIndexAt, instead")
-	public function tileAt(worldX:Float, worldY:Float):Int
+	public function tileAt(CoordX:Float, CoordY:Float):Int
 	{
-		return getTileIndexAt(worldX, worldY);
+		return getTile(Std.int((CoordX - x) / scaledTileWidth), Std.int((CoordY - y) / scaledTileHeight));
 	}
 
-	@:deprecated("tileIndexAt is deprecated, use getMapIndexAt, instead")
-	public function tileIndexAt(worldX:Float, worldY:Float):Int
+	public function tileIndexAt(CoordX:Float, CoordY:Float):Int
 	{
-		return getMapIndexAt(worldX, worldY);
+		var X:Int = Std.int((CoordX - x) / scaledTileWidth);
+		var Y:Int = Std.int((CoordY - y) / scaledTileHeight);
+
+		return Y * widthInTiles + X;
 	}
 
-	@:deprecated("coordsToTileX is deprecated, use getColumnAt, instead")
-	public function coordsToTileX(worldX:Float):Float
+	public function coordsToTileX(CoordX:Float):Float
 	{
-		return getColumnAt(worldX);
+		return Std.int((CoordX - x) / scaledTileWidth);
 	}
 
-	@:deprecated("coordsToTileY is deprecated, use getRowAt, instead")
-	public function coordsToTileY(worldY:Float):Float
+	public function coordsToTileY(CoordY:Float):Float
 	{
-		return getRowAt(worldY);
+		return Std.int((CoordY - y) / scaledTileHeight);
 	}
 
-	@:deprecated("indexToCoordX is deprecated, use getColumnPos(getColumn(mapIndex)), instead")
-	public function indexToCoordX(mapIndex:Int):Float
+	public function indexToCoordX(Index:Int):Float
 	{
-		return getColumnPos(getColumn(mapIndex));
+		return (Index % widthInTiles) * scaledTileWidth + scaledTileWidth / 2;
 	}
 
-	@:deprecated("indexToCoordY is deprecated, use getRowPos(getRow(mapIndex)), instead")
-	public function indexToCoordY(mapIndex:Int):Float
+	public function indexToCoordY(Index:Int):Float
 	{
-		return getRowPos(getRow(mapIndex));
+		return Std.int(Index / widthInTiles) * scaledTileHeight + scaledTileHeight / 2;
 	}
 }
-#elseif FLX_NO_COVERAGE_TEST
-#error "FlxRayCastTilemap has been removed in flixel-addons 4.0.0, use FlxTilemap.ray or rayStep, instead"
-#end
