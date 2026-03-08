@@ -3,7 +3,6 @@ package flixel.addons.effects;
 import openfl.geom.Matrix;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
 import flixel.math.FlxAngle;
 import flixel.math.FlxPoint;
@@ -14,7 +13,11 @@ import flixel.util.FlxDestroyUtil;
  */
 class FlxSkewedSprite extends FlxSprite
 {
+	
 	public var skew(default, null):FlxPoint = FlxPoint.get();
+
+	public var skewOffset:Bool = false;
+	public var flipSkew:Bool = false;
 
 	/**
 	 * Tranformation matrix for this sprite.
@@ -86,9 +89,10 @@ class FlxSkewedSprite extends FlxSprite
 
 		if (skew.x != 0 || skew.y != 0)
 		{
-			_skewMatrix.b = Math.tan(skew.y * FlxAngle.TO_RAD);
-			_skewMatrix.c = Math.tan(skew.x * FlxAngle.TO_RAD);
+			_skewMatrix.b = skew.y * FlxAngle.TO_RAD;
+			_skewMatrix.c = skew.x * FlxAngle.TO_RAD;
 		}
+		
 	}
 
 	override public function isSimpleRender(?camera:FlxCamera):Bool
